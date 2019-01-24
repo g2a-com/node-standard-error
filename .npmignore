@@ -1,0 +1,13 @@
+# Log files
+*.log
+
+# Typescript files
+test/
+tsconfig.json
+tslint.json
+
+# Others
+.idea
+*.iml
+.editorconfig
+.vscode/
