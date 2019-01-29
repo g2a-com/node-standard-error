@@ -1,6 +1,6 @@
 {
   "name": "@g2a/standard-error",
-  "version": "1.0.0-pre",
+  "version": "1.0.0",
   "description": "Library extending javascript error",
   "repository": {
     "type": "git",
