@@ -63,12 +63,12 @@ describe('standard-error', function () {
         const output = BaseError.from(input);
 
         expect(output).to.be.instanceOf(BaseError);
-        expect(output).to.have.property('name', 'Error');
-        expect(output).to.have.property('code', 'error');
+        expect(output).to.have.property('name', 'UnknownError');
+        expect(output).to.have.property('code', 'unknown-error');
         expect(output).to.have.property('message', 'Base error message');
         expect(output).to.have.property('stack', input.stack);
         expect(output).to.have.property('errors', null);
-        expect(output).to.have.deep.property('details', {});
+        expect(output).to.have.property('details').which.is.an('object');
       });
 
       it('when input is an error-like object, then returns new BaseError instance', function () {
@@ -86,7 +86,7 @@ describe('standard-error', function () {
         expect(output).to.have.property('message', 'test message');
         expect(output).to.have.property('stack', 'stack');
         expect(output).to.have.property('errors', null);
-        expect(output).to.have.deep.property('details', { prop: 1 });
+        expect(output).to.have.nested.property('details.prop', 1);
       });
 
       it('when input is an empty object, then return error filled with default values', function () {
@@ -99,7 +99,7 @@ describe('standard-error', function () {
         expect(output).to.have.property('message', 'Unknown Error');
         expect(output).to.have.property('stack').which.is.a('string');
         expect(output).to.have.property('errors', null);
-        expect(output).to.have.deep.property('details', {});
+        expect(output).to.have.property('details').which.is.an('object');
       });
 
       it('when input has extra properties, then return error should have .details.extraPropertiesFromOriginalError property set', function () {
@@ -121,7 +121,7 @@ describe('standard-error', function () {
         expect(output).to.have.property('message', 'Unknown Error');
         expect(output).to.have.property('stack').which.is.a('string');
         expect(output).to.have.property('errors', null);
-        expect(output).to.have.deep.property('details', { originalError: '7' });
+        expect(output).to.have.nested.property('details.originalError', '7');
       });
 
       it('when input object properties have mismatched types, then they should be ignored', function () {
@@ -141,13 +141,20 @@ describe('standard-error', function () {
         expect(output).to.have.property('message', 'Unknown Error');
         expect(output).to.have.property('stack').which.is.a('string');
         expect(output).to.have.property('errors', null);
-        expect(output).to.have.deep.property('details', {});
+        expect(output).to.have.property('details').which.is.an('object');
       });
 
       it('when input is null, then should return error', function () {
         const input = null;
         const output = BaseError.from(input);
         expect(output).to.be.instanceOf(BaseError);
+      });
+
+      it('when name is specified, then it should be preserved in the .details.originalErrorName property', function () {
+        const input = { name: 'SomeCustomName' };
+        const output = BaseError.from(input);
+        expect(output.name).to.be.equal('UnknownError');
+        expect(output).to.have.nested.property('details.originalErrorName', 'SomeCustomName');
       });
     });
   });
@@ -171,7 +178,20 @@ describe('standard-error', function () {
       it('when called, returns instance of ValidationError', function () {
         const output = ValidationError.from({});
         expect(output).to.be.instanceOf(ValidationError);
+        expect(output.name).to.be.equal('ValidationError');
       });
+    });
+  });
+
+  describe('custom subclasses of BaseError', function () {
+    it(`when defaultMessage is set, then it's value should be used when message is not specified`, function () {
+      class CustomError extends BaseError {
+       static defaultMessage = 'DEFAULT MESSAGE'
+      }
+
+      const instance = new CustomError();
+
+      expect(instance).to.haveOwnProperty('message', 'DEFAULT MESSAGE');
     });
   });
 });

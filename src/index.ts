@@ -3,9 +3,7 @@ import camelCase from 'lodash.camelcase';
 import capitalize from 'lodash.capitalize';
 import safeJsonStringify from 'safe-json-stringify';
 
-const DEFAULT_ERROR_NAME = 'UnknownError';
 const DEFAULT_ERROR_MESSAGE = 'Unknown Error';
-const DEFAULT_ERROR_CODE = 'unknown-error';
 
 export interface BaseErrorParams {
   code?: string;
@@ -20,12 +18,13 @@ export interface SubError {
   data?: object;
 }
 
-export default class BaseError extends Error {
+export default class UnknownError extends Error {
   readonly code: string = '';
   readonly message: string;
   readonly name: string;
   readonly details: object;
   readonly errors: SubError[] | null;
+  static defaultMessage?: string;
 
   constructor (params?: BaseErrorParams)
   constructor (message: string, params?: BaseErrorParams)
@@ -43,7 +42,7 @@ export default class BaseError extends Error {
 
     this.name = this.constructor.name;
     this.code = code || this.code || kebabCase(this.name);
-    this.message = message || (this.constructor as { defaultMessage?: string }).defaultMessage || '';
+    this.message = message || (this.constructor as typeof UnknownError).defaultMessage || DEFAULT_ERROR_MESSAGE;
     this.details = safeJsonStringify.ensureProperties(details);
     this.errors = (!errors || errors.length === 0) ? null : errors.map(error => ({
       message: error.message,
@@ -55,21 +54,20 @@ export default class BaseError extends Error {
     Error.captureStackTrace(this, this.constructor);
   }
 
-  static from (error: unknown): BaseError {
+  static from (error: unknown): UnknownError {
     // Don't remap our own errors
-    if (error instanceof BaseError) {
+    if (error instanceof UnknownError) {
       return error;
     }
 
     // If original error is not an object it cannot be easily mapped
     if (!error || typeof error !== 'object') {
-      return BaseError.from({ details: { originalError: safeJsonStringify(error as any) } });
+      return UnknownError.from({ details: { originalError: safeJsonStringify(error as any) } });
     }
 
     // Map important data from original error
     const { name, message, stack, code, errors, details, ...extraProperties } = (error || {}) as Record<string, unknown>;
-    const mappedName = typeof name === 'string' ? capitalize(camelCase(name)) : DEFAULT_ERROR_NAME;
-    const mappedMessage = typeof message === 'string' ? message : DEFAULT_ERROR_MESSAGE;
+    const mappedMessage = typeof message === 'string' ? message : this.defaultMessage || DEFAULT_ERROR_MESSAGE;
     const mappedStack = typeof stack === 'string' ? stack : undefined;
     const mappedCode = typeof code === 'string' ? code : undefined;
     const mappedDetails = typeof details === 'object' && details ? details : {};
@@ -90,12 +88,13 @@ export default class BaseError extends Error {
       (mappedDetails as any).extraPropertiesFromOriginalError = safeJsonStringify(extraProperties);
     }
 
-    // Prepare constructor for new error
-    class Constructor extends this {}
-    Object.defineProperty(Constructor, 'name', { value: mappedName, configurable: true });
+    // If original name is different than new one, add it to details
+    if (name !== undefined && name !== this.name) {
+      (mappedDetails as any).originalErrorName = name;
+    }
 
     // Create new error instance
-    const mappedError = new Constructor(mappedMessage, {
+    const mappedError = new this(mappedMessage, {
       code: mappedCode,
       errors: mappedErrors,
       ...mappedDetails
@@ -114,7 +113,7 @@ export interface ValidationErrorParams extends BaseErrorParams {
   errors: BaseErrorParams['errors']; // The same as on BaseParams but required
 }
 
-export class ValidationError extends BaseError {
+export class ValidationError extends UnknownError {
   static defaultMessage = 'Data doesn\'t pass validation';
 
   constructor (params: ValidationErrorParams)
