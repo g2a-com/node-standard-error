@@ -16,6 +16,7 @@
   "typings": "typings/index.d.ts",
   "scripts": {
     "build": "rm -rf dist typings && tsc",
+    "prepack": "npm run build",
     "test": "mocha -r ts-node/register test/**/*.spec.ts"
   },
   "dependencies": {
