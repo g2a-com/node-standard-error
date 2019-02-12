@@ -20,6 +20,15 @@
     "test": "jest"
   },
   "jest": {
+    "collectCoverage": true,
+    "coverageThreshold": {
+      "global": {
+        "branches": 60,
+        "functions": 60,
+        "lines": 60,
+        "statements": 60
+      }
+    },
     "globals": {
       "ts-jest": {
         "tsConfig": "./test/tsconfig.json"
