@@ -1,5 +1,4 @@
-import { describe, it } from 'mocha';
-import { expect } from 'chai';
+import 'jest';
 import BaseError, { ValidationError } from '../src';
 
 class ExampleError extends BaseError {
@@ -9,7 +8,7 @@ class ExampleError extends BaseError {
 describe('standard-error', function () {
   describe('BaseError', function () {
     describe('constructor', function () {
-      it('should create example error with provided params', function () {
+      test('should create example error with provided params', function () {
         const error = new ExampleError('Example error message', {
           code: 'example-error-code',
           foo: 'foo',
@@ -17,61 +16,61 @@ describe('standard-error', function () {
           fooBar: 'foo-bar'
         });
 
-        expect(error.name).to.be.equal('ExampleError');
-        expect(error.code).to.be.equal('example-error-code');
-        expect(error.message).to.be.equal('Example error message');
-        expect(error.details).to.be.deep.equal({
+        expect(error.name).toEqual('ExampleError');
+        expect(error.code).toEqual('example-error-code');
+        expect(error.message).toEqual('Example error message');
+        expect(error.details).toEqual({
           foo: 'foo',
           bar: 'bar',
           fooBar: 'foo-bar'
         });
       });
 
-      it('should create example error with default message', function () {
+      test('should create example error with default message', function () {
         const error = new ExampleError();
 
-        expect(error.name).to.be.equal('ExampleError');
-        expect(error.code).to.be.equal('example-error');
-        expect(error.message).to.be.equal('Example error default');
-        expect(error.details).to.be.deep.equal({});
+        expect(error.name).toEqual('ExampleError');
+        expect(error.code).toEqual('example-error');
+        expect(error.message).toEqual('Example error default');
+        expect(error.details).toEqual({});
       });
 
-      it('should create example error with default params', function () {
+      test('should create example error with default params', function () {
         const error = new ExampleError({
           foo: 'foo'
         });
 
-        expect(error.name).to.be.equal('ExampleError');
-        expect(error.code).to.be.equal('example-error');
-        expect(error.message).to.be.equal('Example error default');
-        expect(error.details).to.be.deep.equal({
+        expect(error.name).toEqual('ExampleError');
+        expect(error.code).toEqual('example-error');
+        expect(error.message).toEqual('Example error default');
+        expect(error.details).toEqual({
           foo: 'foo'
         });
       });
     });
 
     describe('.from() static method', function () {
-      it('when input is a instance of BaseError, then returns exact the same instance', function () {
+      test('when input is a instance of BaseError, then returns exact the same instance', function () {
         const input = new BaseError();
         const output = BaseError.from(input);
 
-        expect(output).to.be.equal(input);
+        expect(output).toEqual(input);
       });
 
-      it('when error is an Error instance, then returns new BaseError instance', function () {
+      test('when error is an Error instance, then returns new BaseError instance', function () {
         const input = new Error('Base error message');
         const output = BaseError.from(input);
 
-        expect(output).to.be.instanceOf(BaseError);
-        expect(output).to.have.property('name', 'UnknownError');
-        expect(output).to.have.property('code', 'unknown-error');
-        expect(output).to.have.property('message', 'Base error message');
-        expect(output).to.have.property('stack', input.stack);
-        expect(output).to.have.property('errors', null);
-        expect(output).to.have.property('details').which.is.an('object');
+        expect(output).toBeInstanceOf(BaseError);
+        expect(output).toHaveProperty('name', 'UnknownError');
+        expect(output).toHaveProperty('code', 'unknown-error');
+        expect(output).toHaveProperty('message', 'Base error message');
+        expect(output).toHaveProperty('stack', input.stack);
+        expect(output).toHaveProperty('errors', null);
+        expect(output).toHaveProperty('details', expect.any(Object));
       });
 
-      it('when input is an error-like object, then returns new BaseError instance', function () {
+      test('when input is an error-like object, then returns new BaseError instance', function () {
         const input = {
           stack: 'stack',
           message: 'test message',
@@ -80,51 +79,51 @@ describe('standard-error', function () {
         };
         const output = BaseError.from(input);
 
-        expect(output).to.be.instanceOf(BaseError);
-        expect(output).to.have.property('name', 'UnknownError');
-        expect(output).to.have.property('code', 'test-code');
-        expect(output).to.have.property('message', 'test message');
-        expect(output).to.have.property('stack', 'stack');
-        expect(output).to.have.property('errors', null);
-        expect(output).to.have.nested.property('details.prop', 1);
+        expect(output).toBeInstanceOf(BaseError);
+        expect(output).toHaveProperty('name', 'UnknownError');
+        expect(output).toHaveProperty('code', 'test-code');
+        expect(output).toHaveProperty('message', 'test message');
+        expect(output).toHaveProperty('stack', 'stack');
+        expect(output).toHaveProperty('errors', null);
+        expect(output).toHaveProperty('details.prop', 1);
       });
 
-      it('when input is an empty object, then return error filled with default values', function () {
+      test('when input is an empty object, then return error filled with default values', function () {
         const input = {};
         const output = BaseError.from(input);
 
-        expect(output).to.be.instanceOf(BaseError);
-        expect(output).to.have.property('name', 'UnknownError');
-        expect(output).to.have.property('code', 'unknown-error');
-        expect(output).to.have.property('message', 'Unknown Error');
-        expect(output).to.have.property('stack').which.is.a('string');
-        expect(output).to.have.property('errors', null);
-        expect(output).to.have.property('details').which.is.an('object');
+        expect(output).toBeInstanceOf(BaseError);
+        expect(output).toHaveProperty('name', 'UnknownError');
+        expect(output).toHaveProperty('code', 'unknown-error');
+        expect(output).toHaveProperty('message', 'Unknown Error');
+        expect(output).toHaveProperty('stack', expect.any(String));
+        expect(output).toHaveProperty('errors', null);
+        expect(output).toHaveProperty('details', expect.any(Object));
       });
 
-      it('when input has extra properties, then return error should have .details.extraPropertiesFromOriginalError property set', function () {
+      test('when input has extra properties, then return error should have .details.extraPropertiesFromOriginalError property set', function () {
         const input = { details: { detailsProp: 1 }, extraPropA: 2, extraPropB: 3 };
         const output = BaseError.from(input);
-        expect(output).to.have.deep.property('details', {
+        expect(output).toHaveProperty('details', {
           detailsProp: 1,
           extraPropertiesFromOriginalError: `{"extraPropA":2,"extraPropB":3}`
         });
       });
 
-      it('when input is not an object, then return error with .details.originalError property set', function () {
+      test('when input is not an object, then return error with .details.originalError property set', function () {
         const input = 7;
         const output = BaseError.from(input);
 
-        expect(output).to.be.instanceOf(BaseError);
-        expect(output).to.have.property('name', 'UnknownError');
-        expect(output).to.have.property('code', 'unknown-error');
-        expect(output).to.have.property('message', 'Unknown Error');
-        expect(output).to.have.property('stack').which.is.a('string');
-        expect(output).to.have.property('errors', null);
-        expect(output).to.have.nested.property('details.originalError', '7');
+        expect(output).toBeInstanceOf(BaseError);
+        expect(output).toHaveProperty('name', 'UnknownError');
+        expect(output).toHaveProperty('code', 'unknown-error');
+        expect(output).toHaveProperty('message', 'Unknown Error');
+        expect(output).toHaveProperty('stack', expect.any(String));
+        expect(output).toHaveProperty('errors', null);
+        expect(output).toHaveProperty('details.originalError', '7');
       });
 
-      it('when input object properties have mismatched types, then they should be ignored', function () {
+      test('when input object properties have mismatched types, then they should be ignored', function () {
         const input = {
           name: true,
           code: true,
@@ -135,50 +134,50 @@ describe('standard-error', function () {
         };
         const output = BaseError.from(input);
 
-        expect(output).to.be.instanceOf(BaseError);
-        expect(output).to.have.property('name', 'UnknownError');
-        expect(output).to.have.property('code', 'unknown-error');
-        expect(output).to.have.property('message', 'Unknown Error');
-        expect(output).to.have.property('stack').which.is.a('string');
-        expect(output).to.have.property('errors', null);
-        expect(output).to.have.property('details').which.is.an('object');
+        expect(output).toBeInstanceOf(BaseError);
+        expect(output).toHaveProperty('name', 'UnknownError');
+        expect(output).toHaveProperty('code', 'unknown-error');
+        expect(output).toHaveProperty('message', 'Unknown Error');
+        expect(output).toHaveProperty('stack', expect.any(String));
+        expect(output).toHaveProperty('errors', null);
+        expect(output).toHaveProperty('details', expect.any(Object));
       });
 
-      it('when input is null, then should return error', function () {
+      test('when input is null, then should return error', function () {
         const input = null;
         const output = BaseError.from(input);
-        expect(output).to.be.instanceOf(BaseError);
+        expect(output).toBeInstanceOf(BaseError);
       });
 
       it('when name is specified, then it should be preserved in the .details.originalErrorName property', function () {
         const input = { name: 'SomeCustomName' };
         const output = BaseError.from(input);
-        expect(output.name).to.be.equal('UnknownError');
-        expect(output).to.have.nested.property('details.originalErrorName', 'SomeCustomName');
+        expect(output.name).toEqual('UnknownError');
+        expect(output).toHaveProperty('details.originalErrorName', 'SomeCustomName');
       });
     });
   });
 
   describe('ValidationError', function () {
     describe('constructor', function () {
-      it('when called with message and params, then don\'t uses defaults', function () {
+      test('when called with message and params, then don\'t uses defaults', function () {
         const error = new ValidationError('Example error message', { code: 'example-error-code', errors: [] });
-        expect(error).to.have.property('message', 'Example error message');
-        expect(error).to.have.property('code', 'example-error-code');
+        expect(error).toHaveProperty('message', 'Example error message');
+        expect(error).toHaveProperty('code', 'example-error-code');
       });
 
-      it('when called with params, then uses default message', function () {
+      test('when called with params, then uses default message', function () {
         const error = new ValidationError({ code: 'example-error-code', errors: [] });
-        expect(error).to.have.property('message', ValidationError.defaultMessage);
-        expect(error).to.have.property('code', 'example-error-code');
+        expect(error).toHaveProperty('message', ValidationError.defaultMessage);
+        expect(error).toHaveProperty('code', 'example-error-code');
       });
     });
 
     describe('.from() static method', function () {
-      it('when called, returns instance of ValidationError', function () {
+      test('when called, returns instance of ValidationError', function () {
         const output = ValidationError.from({});
-        expect(output).to.be.instanceOf(ValidationError);
-        expect(output.name).to.be.equal('ValidationError');
+        expect(output).toBeInstanceOf(ValidationError);
+        expect(output.name).toEqual('ValidationError');
       });
     });
   });
@@ -191,7 +190,7 @@ describe('standard-error', function () {
 
       const instance = new CustomError();
 
-      expect(instance).to.haveOwnProperty('message', 'DEFAULT MESSAGE');
+      expect(instance).toHaveProperty('message', 'DEFAULT MESSAGE');
     });
   });
 });

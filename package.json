@@ -17,7 +17,7 @@
   "scripts": {
     "build": "rm -rf dist typings && tsc",
     "prepack": "npm run build",
-    "test": "mocha -r ts-node/register test/**/*.spec.ts"
+    "test": "jest"
   },
   "dependencies": {
     "@types/lodash.camelcase": "^4.3.4",
@@ -31,11 +31,9 @@
     "safe-json-stringify": "^1.2.0"
   },
   "devDependencies": {
-    "@types/chai": "^4.1.2",
-    "@types/mocha": "^5.0.0",
-    "chai": "^4.1.2",
-    "mocha": "^5.1.0",
-    "ts-node": "^6.0.0",
+    "@types/jest": "^24.0.1",
+    "jest": "^24.1.0",
+    "ts-jest": "^23.10.5",
     "typescript": "^3.0.3"
   }
 }
