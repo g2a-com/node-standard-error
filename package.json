@@ -19,6 +19,23 @@
     "prepack": "npm run build",
     "test": "jest"
   },
+  "jest": {
+    "globals": {
+      "ts-jest": {
+        "tsConfig": "./test/tsconfig.json"
+      }
+    },
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "testEnvironment": "node",
+    "testRegex": "/test/.*.spec.ts",
+    "transform": {
+      "^.+\\.(ts)$": "ts-jest"
+    },
+    "verbose": true
+  },
   "dependencies": {
     "@types/lodash.camelcase": "^4.3.4",
     "@types/lodash.capitalize": "^4.2.4",
