@@ -1,6 +1,4 @@
 import kebabCase from 'lodash.kebabcase';
-import camelCase from 'lodash.camelcase';
-import capitalize from 'lodash.capitalize';
 import safeJsonStringify from 'safe-json-stringify';
 
 const DEFAULT_ERROR_MESSAGE = 'Unknown Error';
@@ -18,7 +16,7 @@ export interface SubError {
   data?: object;
 }
 
-export default class UnknownError extends Error {
+class UnknownError extends Error {
   readonly code: string = '';
   readonly message: string;
   readonly name: string;
@@ -108,6 +106,9 @@ export default class UnknownError extends Error {
     return mappedError;
   }
 }
+
+export const StandardError = UnknownError;
+export default UnknownError;
 
 export interface ValidationErrorParams extends BaseErrorParams {
   errors: BaseErrorParams['errors']; // The same as on BaseParams but required
