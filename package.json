@@ -16,6 +16,7 @@
   "typings": "typings/index.d.ts",
   "scripts": {
     "build": "rm -rf dist typings && tsc",
+    "bump-version": "standard-version",
     "prepack": "npm run build",
     "test": "jest"
   },
@@ -94,6 +95,7 @@
     "jest": "^24.1.0",
     "lint-staged": "^9.4.2",
     "sort-package-json": "^1.22.1",
+    "standard-version": "^7.0.0",
     "standardx": "^5.0.0",
     "ts-jest": "^23.10.5",
     "typescript": "^3.0.3"
