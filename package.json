@@ -6,7 +6,7 @@
     "type": "git",
     "url": "git@github.com:g2a-com/node-standard-error.git"
   },
-  "license": "UNLICENSED",
+  "license": "MIT",
   "files": [
     "dist/*",
     "src/*",
