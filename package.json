@@ -19,6 +19,34 @@
     "prepack": "npm run build",
     "test": "jest"
   },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "lint-staged",
+      "pre-push": "npm test"
+    }
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "lint-staged": {
+    "*.ts": [
+      "standard --fix",
+      "git add"
+    ],
+    "package.json": [
+      "sort-package-json",
+      "git add"
+    ]
+  },
+  "eslintConfig": {
+    "rules": {
+      "no-useless-constructor": 0,
+      "no-dupe-class-members": 0
+    }
+  },
   "jest": {
     "collectCoverage": true,
     "coverageThreshold": {
@@ -57,19 +85,18 @@
     "safe-json-stringify": "^1.2.0"
   },
   "devDependencies": {
+    "@commitlint/config-conventional": "^8.2.0",
     "@types/jest": "^24.0.1",
     "@typescript-eslint/eslint-plugin": "^2.3.3",
     "@typescript-eslint/parser": "^2.3.3",
+    "commitlint": "^8.2.0",
+    "husky": "^3.0.9",
     "jest": "^24.1.0",
+    "lint-staged": "^9.4.2",
+    "sort-package-json": "^1.22.1",
     "standardx": "^5.0.0",
     "ts-jest": "^23.10.5",
     "typescript": "^3.0.3"
-  },
-  "eslintConfig": {
-    "rules": {
-      "no-useless-constructor": 0,
-      "no-dupe-class-members": 0
-    }
   },
   "standardx": {
     "parser": "@typescript-eslint/parser",
