@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-
+### [1.3.2](https://github.com/g2a-com/node-standard-error/compare/v1.3.1...v1.3.2) (2020-10-22)
 
 ### [1.3.1](https://github.com/g2a-com/node-standard-error/compare/v1.3.0...v1.3.1) (2019-10-13)
 
@@ -49,4 +49,3 @@ All notable changes to this project will be documented in this file. See [standa
 #### Features
 
 * initial version ([080d447](https://github.com/g2a-com/node-standard-error/commit/080d4471327ab23c19bc126de95df79b44dea9e9))
-
